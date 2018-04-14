@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="utf-8">
+    <title>Exercicio 1</title>
+    <script src="scripts/Player.js"> //player code </script>
+    <script src="scripts/HUD.js"> //HUD code</script>
+    <script src="scripts/Platform.js"> //HUD code</script>
+
+</head>
+
+<body>
+    <h1>Exercicio 1</h1>
+    <canvas width="1000" height="500"></canvas>
+    <script>
+        //Variables
+        var screen = document.getElementsByTagName("canvas")[0];
+        var ctx = screen.getContext("2d");
+        var wind = 0;
+        var G = 100;
+        var dt = prevTime = 0;
+        var player = new Player(screen.width, screen.height);
+        var HUD = new HUD();
+        var platform = new Platform(470, 485, 60, 15);
+        var debug = false; //to see the hit boxes
+        var inGame = false;
+        var maxSpeed = 200;
+        var highScore = 0;
+        var level = 0;
+        //functions
+        function clearScreen() {
+            ctx.fillStyle = "black";
+            ctx.fillRect(0, 0, screen.width, screen.height);
+            ctx.fillStyle = "purple";
+            ctx.fillRect(0, 0, screen.width, 40);
+
+
+        }
+        function resetVariables() {
+            //restore the variables to their default value
+            player.fuel = 100;
+            player.x = player.x0;
+            player.y = player.y0;
+            player.vy = 0;
+        }
+        function step(t) {
+            clearScreen();
+            if (inGame == true) {
+                dt = (t - prevTime) / 1000;
+                player.move(dt);
+                player.boundaries(0, 40, screen.width, screen.height);
+                if (player.collideWith(platform)) {
+                    if (Math.abs(player.vy) < maxSpeed && Math.abs(player.vy) > maxSpeed / 2) {
+                        level++;
+                        maxSpeed = maxSpeed - 5 * level;
+                        player.score += 100;
+                        player.lifes = 3;
+                        resetVariables();
+                    } else {
+                        player.lifes--;
+                        if (player.lifes > 0) {
+                            resetVariables();
+                        } else {
+                            if (highScore < player.score)
+                                highScore = player.score;
+                            inGame = false;
+                        }
+                    }
+                }
+                if (player.y + player.h >= screen.height) {
+                    player.lifes--;
+                    if (player.lifes > 0) {
+                        resetVariables();
+                    } else {
+                        if (highScore < player.score)
+                            highScore = player.score;
+                        inGame = false;
+                    }
+                }
+                if (player.fuel == 0) {
+                    player.lifes--;
+                    if (player.lifes > 0) {
+                        resetVariables();
+                    } else {
+                        if (highScore < player.score)
+                            highScore = player.score;
+                        inGame = false;
+                    }
+                }
+                player.draw(ctx);
+                platform.draw(ctx, 1);
+                HUD.draw(ctx, -1 * player.vy, player.fuel, player.score, player.lifes);
+                prevTime = t;
+            } else {
+                HUD.drawMenu(ctx, 700, 400, highScore);
+            }
+
+
+            requestAnimationFrame(step);
+        }
+
+        requestAnimationFrame(step);
+
+        addEventListener("keydown", function (e) {
+            switch (e.keyCode) {
+                case 37: //left arrow key
+                    player.ax = -300;
+                    break;
+                case 39: //right arrow key
+                    player.ax = 300;
+                    break;
+                case 38: //up arrow key
+                    if (player.fuel > 0.0) {
+                        player.fuel = player.fuel - player.fuel * dt;
+                        if (player.fuel <= 0.9)
+                            player.fuel = 0.0;
+                        player.ay = (-300);
+                    } else {
+                        player.ay = 0;
+                    }
+                    break;
+                default:
+            }
+        });
+        addEventListener("keyup", function (e) {
+            switch (e.keyCode) {
+                case 37: //left arrow key
+                    player.ax = -0;
+                    break;
+                case 39: //right arrow key
+                    player.ax = -0;
+                    break;
+                case 38: //up arrow key
+                    player.ay = 0;
+                    break;
+                case 32: //space key
+                    if (inGame == false) {
+                        player.lifes = 3;
+                        level = 1;
+                        resetVariables();
+                        player.score = 0;
+                        dt = prevTime = 0;
+                        inGame = true;
+                    }
+                    break;
+                default:
+            }
+        });
+    </script>
+</body>
+
+</html>

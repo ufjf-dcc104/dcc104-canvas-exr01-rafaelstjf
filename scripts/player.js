@@ -32,11 +32,12 @@ Player.prototype.draw = function (ctx) {
     ctx.closePath();
 
     if (this.ay < 0) {
+
         ctx.beginPath();
         ctx.fillStyle = "orange";
         ctx.strokeStyle = "red";
         ctx.moveTo(this.x + 5, this.y + this.h);
-        ctx.lineTo((this.w / 2) + this.x, this.y+ 2*this.h);
+        ctx.lineTo((this.w / 2) + this.x, this.y+ (Math.random()* (3 - 1) + 1)*this.h);
         ctx.lineTo(this.w + this.x - 5, this.y + this.h);
         ctx.lineTo(this.x + 5, this.y + this.h );
         ctx.fill();

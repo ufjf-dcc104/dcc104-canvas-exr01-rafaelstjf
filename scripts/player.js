@@ -56,7 +56,7 @@ Player.prototype.draw = function (ctx) {
 
 Player.prototype.move = function (dt) {
 
-    this.vx = this.vx + this.ax * dt
+    this.vx = this.vx + (wind + this.ax) * dt
     this.vy = this.vy + (G + this.ay) * dt
     this.x = this.x + this.vx * dt;
     this.y = this.y + this.vy * dt;

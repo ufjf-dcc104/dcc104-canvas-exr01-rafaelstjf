@@ -3,12 +3,14 @@ function Player(w1, h1) {
     this.y = h1 / 2;
     this.x0 = this.x;
     this.y0 = this.y;
-    this.w = 40;
-    this.h = 40;
+    this.w = 60;
+    this.h = 60;
     this.vx = 0;
     this.vy = 0;
     this.ax = 0;
     this.ay = 0;
+    this.sprite = new Image();
+    this.sprite.src="assets/spaceship.png";
     this.cor = "white";
     this.strokeColor = "grey";
     this.imunidade = 0;
@@ -20,6 +22,7 @@ function Player(w1, h1) {
 Player.prototype.draw = function (ctx) {
     ctx.save();
     //triangle
+    /*
     ctx.beginPath();
     ctx.fillStyle = this.cor;
     ctx.strokeStyle = this.strokeColor;
@@ -30,16 +33,18 @@ Player.prototype.draw = function (ctx) {
     ctx.fill();
     ctx.stroke();
     ctx.closePath();
+    */
+    ctx.drawImage(this.sprite,this.x, this.y,this.w, this.h);
 
     if (this.ay < 0) {
 
         ctx.beginPath();
         ctx.fillStyle = "orange";
         ctx.strokeStyle = "red";
-        ctx.moveTo(this.x + 5, this.y + this.h);
+        ctx.moveTo(this.x + 20, this.y + this.h);
         ctx.lineTo((this.w / 2) + this.x, this.y+ (Math.random()* (3 - 1) + 1)*this.h);
-        ctx.lineTo(this.w + this.x - 5, this.y + this.h);
-        ctx.lineTo(this.x + 5, this.y + this.h );
+        ctx.lineTo(this.w + this.x - 20, this.y + this.h);
+        ctx.lineTo(this.x + 20, this.y + this.h );
         ctx.fill();
         ctx.stroke();
         ctx.closePath();
